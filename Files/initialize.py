@@ -19,3 +19,6 @@ MUSIC_CHANNEL = os.getenv("MUSIC_CHANNEL_KEYWORD")
 statuses = [["you", "Netflix", "Re:Zero", "Kakegurui", "basketball", "hockey"],
             ["with fire", "Poker against myself...and losing", "trumpet", "piano", "tennis", "badminton"],
             ["my new mixtape", "#SELFIE", "the rain", "footsteps on the roof", "you breathe"]]
+
+# bot
+bot = commands.Bot(command_prefix="!")

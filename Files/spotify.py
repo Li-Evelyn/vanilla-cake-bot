@@ -44,7 +44,7 @@ def get_artists(json):
     return ", ".join([artist['name'] for artist in json['artists']])
 
 
-def echo_info(link):
+def echo_info(discriminator, link):
     processed_link = process_link(link)
     json = get_item(processed_link)
-    return [get_title(json), get_artists(json), processed_link["link"]]
+    return [discriminator, get_title(json), get_artists(json), processed_link["link"]]

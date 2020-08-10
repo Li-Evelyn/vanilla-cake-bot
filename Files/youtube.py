@@ -48,6 +48,8 @@ def get_data(snippet):
                 data["title"] = data["title"][data["title"].index(separator) + 3:]
             break
 
+    # TODO: process any featured artists from the title and add them to data["artist"]
+
     for ending in possible_endings:
         if ending in data["title"].lower():
             data["title"] = data["title"][:data["title"].lower().index(ending)-1].strip()
@@ -60,7 +62,7 @@ def get_data(snippet):
     return data
 
 
-def echo_info(link):
+def echo_info(discriminator, link):
     video_id = process_link(link)
     data = get_data(get_snippet(video_id))
-    return [data["title"], data["artist"], f"https://youtu.be/{video_id}"]
+    return [discriminator, data["title"], data["artist"], f"https://youtu.be/{video_id}"]

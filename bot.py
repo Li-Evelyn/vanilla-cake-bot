@@ -15,7 +15,6 @@ async def change_status():
     num = random.randint(0, 2)
     selection = random.randint(0, len(statuses[num]) - 1)
     name = statuses[num][selection]
-    print(name)
     if num == 0:
         activity = discord.Activity(name=f"{name}", type=discord.ActivityType.watching)
     elif num == 1:
@@ -29,6 +28,7 @@ async def change_status():
 async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
         await ctx.send("i don't have enough information :confused: - did you enter all necessary arguments?")
+    # TODO: catch more errors
 
 
 @bot.command(name="rps", help="play classic rock-paper-scissors!")
@@ -40,7 +40,6 @@ async def rps(ctx, choice):
 async def join(ctx):
     channel = ctx.message.author.voice.channel
     voice = get(bot.voice_clients, guild=ctx.guild)
-    print(channel)
 
     if voice and voice.is_connected():
         await voice.move_to(channel)
@@ -61,10 +60,14 @@ async def leave(ctx):
         await ctx.send("i'm not currently in a voice channel")
 
 
+# TODO: add command to play music (and all other commands that come with it)
+
+
 @bot.event
 async def on_message(message):
 
     activity = None
+    discriminator = message.author.discriminator
 
     if message.author == bot.user:
         return
@@ -75,11 +78,10 @@ async def on_message(message):
                                     message.content.strip().split()))
         for link in list_of_links:
             if spotify.is_spotify_link(link):
-                info = spotify.echo_info(link)
+                info = spotify.echo_info(discriminator, link)
             else:
-                info = youtube.echo_info(link)
-            titles.append(f"{info[0]} by {info[1]}")
-            print(info)
+                info = youtube.echo_info(discriminator, link)
+            titles.append(f"{info[1]} by {info[2]}")
             await message.channel.send(info)
         activity = discord.Activity(name=f"{', then '.join(titles)}", type=discord.ActivityType.listening)
     elif message.content.startswith("!rps "):
@@ -89,7 +91,7 @@ async def on_message(message):
     if activity:
         await bot.change_presence(activity=activity)
 
-    print(message.author.activities[0].name)
+    # print(message.author.activities[0].name)
 
     # process commands before on_message
     await bot.process_commands(message)

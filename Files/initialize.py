@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import Files.spotify as spotify
 import Files.gaming as gaming
 import Files.youtube as youtube
+import Files.spreadsheet as spreadsheet
 
 # env
 load_dotenv()

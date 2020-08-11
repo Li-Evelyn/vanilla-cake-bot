@@ -60,6 +60,10 @@ async def leave(ctx):
 
 # TODO: add command to play music (and all other commands that come with it)
 
+# TODO: add command to "manually" add entry to the spreadsheet (ex. soundcloud, bandcamp, non-hyperlinked tracks)
+#       (params: *specific, should be [str, str, str])
+
+# TODO: add command to rate the most recent sending of a track (params: title, rating)
 
 @bot.event
 async def on_message(message):
@@ -80,7 +84,8 @@ async def on_message(message):
             else:
                 info = youtube.echo_info(discriminator, link)
             titles.append(f"{info[1]} by {info[2]}")
-            await message.channel.send(info)
+            async with message.channel.typing():
+                await message.channel.send(spreadsheet.update_spreadsheet(info))
         activity = discord.Activity(name=f"{', then '.join(titles)}", type=discord.ActivityType.listening)
     elif message.content.startswith("!rps "):
         activity = discord.Game(f"rock paper scissors with {message.author.display_name}")

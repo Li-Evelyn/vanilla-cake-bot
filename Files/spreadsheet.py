@@ -44,7 +44,7 @@ def process_date_info(info):
     if is_entry_from_today_present(f"{info[0]}"):
         upload_info[0] = ""
     else:
-        upload_info[0] = str(date.today())
+        upload_info[0] = f"{date.today()}"
     return upload_info
 
 

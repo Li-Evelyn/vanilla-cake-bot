@@ -44,7 +44,7 @@ async def join(ctx):
     else:
         await channel.connect()
 
-    await ctx.send(f"hey! i'm in <#{channel.id}> now!")
+    await ctx.send(f"hey! i'm in <#{channel.id}> now! :wave:")
 
 
 @bot.command(pass_context=True)
@@ -52,16 +52,37 @@ async def leave(ctx):
     voice = get(bot.voice_clients, guild=ctx.guild)
 
     if voice and voice.is_connected():
-        await ctx.send("okay, until next time!")
+        await ctx.send("okay, until next time! :wave:")
         await voice.disconnect()
     else:
-        await ctx.send("i'm not currently in a voice channel")
+        await ctx.send("i'm not currently in a voice channel :triumph:")
 
 
 # TODO: add command to play music (and all other commands that come with it)
 
-# TODO: add command to "manually" add entry to the spreadsheet (ex. soundcloud, bandcamp, non-hyperlinked tracks)
-#       (params: *specific, should be [str, str, str])
+@bot.command(name="enter", help="manually add a track to the spreadsheet")
+async def manual_entry(ctx, *specific):
+    user_message = ctx.message
+    if len(specific) < 2:
+        await ctx.send("please enter a minimum of a title and an artist :triumph:")
+        return
+
+    # TODO: parse <link> formatting
+    # if len(specific) >= 3 and specific[2].startswith("<") and specific[2].endswith(">"):
+    #     print("hey")
+    #     specific[2] = specific[2][1:-1]
+
+    if MUSIC_CHANNEL in user_message.channel.name:
+        discriminator = user_message.author.discriminator
+        info_list = list(specific)
+        info_list.insert(0, f"{discriminator}")
+        activity = discord.Activity(name=f"{info_list[1]} by {info_list[2]}", type=discord.ActivityType.listening)
+        async with user_message.channel.typing():
+            await ctx.send(spreadsheet.update_spreadsheet(info_list))
+        await bot.change_presence(activity=activity)
+    else:
+        await ctx.send("you're not supposed to use this command in this channel :triumph:")
+
 
 # TODO: add command to rate the most recent sending of a track (params: title, rating)
 
@@ -81,7 +102,7 @@ async def on_message(message):
         for link in list_of_links:
             if spotify.is_spotify_link(link):
                 info = spotify.echo_info(discriminator, link)
-            else:
+            elif youtube.is_youtube_link(link):
                 info = youtube.echo_info(discriminator, link)
             titles.append(f"{info[1]} by {info[2]}")
             async with message.channel.typing():

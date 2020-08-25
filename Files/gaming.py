@@ -14,3 +14,9 @@ def rps_classic(choice):
     else:
         victory += "I won!"
     return victory
+
+# TODO: vote rock paper scissors https://kakegurui.fandom.com/wiki/Vote_Rock-Paper-Scissors
+
+# TODO: nim type zero https://kakegurui.fandom.com/wiki/Nim_Type_Zero
+
+# TODO: m i n e s w e e p e r

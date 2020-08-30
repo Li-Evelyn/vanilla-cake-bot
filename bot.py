@@ -63,22 +63,22 @@ async def leave(ctx):
 @bot.command(name="enter", help="manually add a track to the spreadsheet")
 async def manual_entry(ctx, *specific):
     user_message = ctx.message
+
     if len(specific) < 2:
         await ctx.send("please enter a minimum of a title and an artist :triumph:")
         return
 
-    # TODO: parse <link> formatting
-    # if len(specific) >= 3 and specific[2].startswith("<") and specific[2].endswith(">"):
-    #     print("hey")
-    #     specific[2] = specific[2][1:-1]
+    new_specific = list(specific)
+
+    if len(new_specific) >= 3 and specific[2][0] == "<" and specific[2][-1] == ">":
+        new_specific[2] = new_specific[2][1:-1]
 
     if MUSIC_CHANNEL in user_message.channel.name:
         discriminator = user_message.author.discriminator
-        info_list = list(specific)
-        info_list.insert(0, f"{discriminator}")
-        activity = discord.Activity(name=f"{info_list[1]} by {info_list[2]}", type=discord.ActivityType.listening)
+        new_specific.insert(0, f"{discriminator}")
+        activity = discord.Activity(name=f"{new_specific[1]} by {new_specific[2]}", type=discord.ActivityType.listening)
         async with user_message.channel.typing():
-            await ctx.send(spreadsheet.update_spreadsheet(info_list))
+            await ctx.send(spreadsheet.update_spreadsheet(new_specific))
         await bot.change_presence(activity=activity)
     else:
         await ctx.send("you're not supposed to use this command in this channel :triumph:")

@@ -84,7 +84,22 @@ async def manual_entry(ctx, *specific):
         await ctx.send("you're not supposed to use this command in this channel :triumph:")
 
 
-# TODO: add command to rate the most recent sending of a track (params: title, rating)
+@bot.command(name="rate", help="add your rating of a song to the spreadsheet")
+async def rate(ctx, *specific):
+    user_message = ctx.message
+
+    if len(specific) == 0:
+        await ctx.send("To rate the most recently sent song, enter a number (or a formula without spaces) along with "
+                       "the command. To specify a song, first enter the title of the song and then your rating.")
+        return
+
+    # TODO: implement the update_rating function properly
+    if len(specific) == 1:
+        print(f"rating: {str(specific[0])}")
+    else:
+        print(f"title: {' '.join(list(specific[:-1]))}, rating: {specific[-1]}")
+
+
 
 @bot.event
 async def on_message(message):
